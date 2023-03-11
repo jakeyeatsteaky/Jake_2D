@@ -32,62 +32,60 @@ void sdl()
 }
 #endif
 
-class Observer
+class Observer_Interface
 {
 public:
-    Observer() = default;
-    Observer(std::string n) : name(n) {}
-    ~Observer () {}
+    virtual ~Observer_Interface() {}
+    virtual void OnNotifyAll() = 0;
 
-    void onNotifyAll() {
-        std::cout << name << " says hello \n";
+};
+class Subject_Interface
+{
+public:
+    Subject_Interface() {}
+    virtual ~Subject_Interface() {} // virtual destructors are necessary when you have a base class with derived classes and at least one virtual function.  The base class is assumed to be used polymorphically
+
+    virtual void AddObserver(Observer_Interface* ob_i) {
+        observers.push_front(ob_i);
     }
 
-    std::string getName() {return name;}
+    virtual void RemoveObserver(Observer_Interface* ob_i) {
+        observers.remove(ob_i);
+    }
+
+    virtual void NotifyAll() {
+        for(Observer_Interface* o : observers)
+            o->OnNotifyAll();
+    }
+
+private:   
+    std::forward_list<Observer_Interface*> observers;
+};
+
+
+class Watcher : public Observer_Interface
+{
+public:
+    explicit Watcher(const std::string& name): name(name) {};
+
+    void OnNotifyAll() override {
+        std::cout << name << " has been notified\n";
+    }
+
 private:
     std::string name;
 };
 
-class Subject
+class Concrete_Subject : public Subject_Interface
 {
 public:
-    Subject() = default;
-    ~Subject() {}
-    
-    void AddObserver(Observer* ob) {
-        observers.push_front(ob);
-    }
-
-    void RemoveObserver(Observer* ob) {
-        observers.remove(ob);
-    }
-
-    void NotifyAll() {
-        for(Observer* o : observers) {
-            o->onNotifyAll();
-        }
-    }
-
-private:
-    std::string name;
-    std::forward_list<Observer*> observers; // Consideration: Does this subject have ownership of all these observers?  Something to think about when using this raw pointer or smart pointers
     
 };
 
 
 int main(int argc, char** argv) 
 {
-    Subject subject;
-    Observer ob  = Observer("ob");
-    subject.AddObserver(&ob);
-    subject.AddObserver(new Observer("Ob 2"));
-    subject.AddObserver(new Observer("Ob 3"));
 
-    subject.NotifyAll();
-
-    subject.RemoveObserver(&ob);
-
-    subject.NotifyAll();
 
     return 0;
 }
