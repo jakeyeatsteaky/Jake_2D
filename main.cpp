@@ -1,4 +1,6 @@
+#include <cassert>
 #include <stdio.h>
+#include <vector>
 
 #include "SDL.h"
 
@@ -6,6 +8,7 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+#define HEAP_CAPACITY 6400
 
 #ifdef _USE_SDL_
 void sdl() 
@@ -30,11 +33,26 @@ void sdl()
 }
 #endif
 
+std::byte heap[HEAP_CAPACITY];
+size_t heap_size = 0;
 
+void* heap_alloc(size_t size) 
+{
+    assert(heap_size + size <= HEAP_CAPACITY);
+    void* result = heap + heap_size;
+    heap_size += size;
+    return result;
+}
+
+void heap_free(void* ptr)
+{
+
+    assert(false && "TODO: implement heap_free");
+}
 
 int main(int argc, char** argv) 
 {
-
+    
 
     return 0;
 }
