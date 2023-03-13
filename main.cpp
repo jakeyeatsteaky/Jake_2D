@@ -5,6 +5,7 @@
 #include "SDL.h"
 
 #include "Observer.h"
+#include "Stack.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -52,7 +53,6 @@ void heap_free(void* ptr)
 
 int main(int argc, char** argv) 
 {
-    
 
     return 0;
 }
