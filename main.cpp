@@ -1,58 +1,84 @@
 #include <cassert>
+#include <array>
 #include <stdio.h>
 #include <vector>
+#include <algorithm>
 
 #include "SDL.h"
 
+#include "DataStructures.h"
 #include "Observer.h"
-#include "Stack.h"
+#include "SDL_functions.h"
+#include "util.h"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-#define HEAP_CAPACITY 6400
+#define FPS 30
+#define MS_PER_FRAME (1000/FPS)
 
-#ifdef _USE_SDL_
-void sdl() 
+class Mat3
 {
-   if (SDL_Init(SDL_INIT_VIDEO) < 0){
-        printf("Could not init SDL ::SDL_ERROR:: {}\n");
+public:
+    Mat3() = default;
+    Mat3(const Vec3& row0, const Vec3& row1, const Vec3& row2) {
+        data[0] = row0;
+        data[1] = row1;
+        data[2] = row2;
     }
 
-    SDL_Window* window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-    if (!window){
-        printf("SDL Window could not be created :: SDL_ERROR :: {}\n");
+    void printMatrix() {
+        for(Vec3& row : data)
+        {
+            std::cout << row.xPos << " " << row.yPos << " " << row.zPos << "\n";
+        }
+        std::cout << "-------\n";
     }
 
-    SDL_SetWindowResizable(window, SDL_TRUE);
+    void transpose() {
+        Vec3 newRow0;
+        Vec3 newRow1;
+        Vec3 newRow2;
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer){
-        printf("SDL Renderer could not be created :: SDL_ERROR :: {}\n");
+        newRow0.xPos = data[0].xPos;
+        newRow0.yPos = data[1].xPos;
+        newRow0.zPos = data[2].xPos;
+        
+        newRow1.xPos = data[0].yPos;
+        newRow1.yPos = data[1].yPos;
+        newRow1.zPos = data[2].yPos;
+
+        newRow2.xPos = data[0].zPos;
+        newRow2.yPos = data[1].zPos;
+        newRow2.zPos = data[2].zPos;
+
+        data[0] = newRow0;
+        data[1] = newRow1;
+        data[2] = newRow2;
     }
 
-    printf("Successfully created SDL Window\n");
-}
-#endif
+    Vec3 getRow(int index) {return data[index];}
 
-std::byte heap[HEAP_CAPACITY];
-size_t heap_size = 0;
+private:
+    std::array<Vec3, 3> data;
+};
 
-void* heap_alloc(size_t size) 
-{
-    assert(heap_size + size <= HEAP_CAPACITY);
-    void* result = heap + heap_size;
-    heap_size += size;
-    return result;
-}
-
-void heap_free(void* ptr)
-{
-
-    assert(false && "TODO: implement heap_free");
-}
 
 int main(int argc, char** argv) 
 {
+   
+   SDL* sdl = new SDL();
+   sdl->init();
+   bool is_running = true;
+
+   while(is_running)
+   {
+        process_input(is_running);
+        render(sdl);
+   }
+
+    Mat3* matrix = new Mat3(Vec3(1,2,3), Vec3(4,5,6), Vec3(7,8,9));
+    matrix->printMatrix();
+    matrix->transpose();
+    matrix->printMatrix();
 
     return 0;
+
 }
