@@ -1,7 +1,15 @@
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 
-#include "stdio.h"
+#include <stdio.h>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <array>
+#include <cmath>
+
+
 template <typename T>
 class Stack
 {
@@ -52,6 +60,7 @@ public:
     float DotProduct(Vec3& vec2);
     Vec3* CrossProduct(Vec3& vec2);
     float ScalarProjection(Vec3& vec1, Vec3& vec2);
+    void Normalize();
     void printVec();
 
     Vec3& operator = (const Vec3& other);
@@ -91,17 +100,6 @@ struct Plane
     int D;
 };
 
-/*
-Implement a runtime code in C++ that sorts a 
-list of game items based on their rarity. 
-The items should be represented by a class with 
-the following attributes: name (string), rarity (int), 
-and value (float). The sorting should be performed 
-using a custom comparator that compares the rarity of 
-the items. Write a test program that creates a list of 
-items and sorts them using your implementation.
-*/
-
 enum class Gem
 {   
     Ruby,
@@ -111,6 +109,16 @@ enum class Gem
 
 class GameItem
 {
+                /*
+                Implement a runtime code in C++ that sorts a 
+                list of game items based on their rarity. 
+                The items should be represented by a class with 
+                the following attributes: name (string), rarity (int), 
+                and value (float). The sorting should be performed 
+                using a custom comparator that compares the rarity of 
+                the items. Write a test program that creates a list of 
+                items and sorts them using your implementation.
+                */
 public:
     GameItem() = default;
     GameItem(Gem name, float value) : name(name), value(value) {
@@ -146,43 +154,163 @@ private:
     float value;
 };
 
-void sortByRarity(std::vector<GameItem*>& item)
-{
-    std::vector<GameItem*>::iterator it = item.begin();
-    std::vector<GameItem*>::iterator itEnd = item.end();
+// void sortByRaritys(std::vector<GameItem*>& item)
+// {
+//     std::vector<GameItem*>::iterator it = item.begin();
+//     std::vector<GameItem*>::iterator itEnd = item.end();
+//     std::sort(it, itEnd, [](GameItem* a, GameItem* b) {return a->getRarity() < b->getRarity();});
+// }
 
-    std::sort(it, itEnd, [](GameItem* a, GameItem* b) {return a->getRarity() < b->getRarity();});
-    
+class Mat3
+{
+public:
+    Mat3() = default;
+    Mat3(const Vec3& row0, const Vec3& row1, const Vec3& row2) {
+        data[0] = row0;
+        data[1] = row1;
+        data[2] = row2;
+    }
+
+    void printMatrix() {
+        for(Vec3& row : data)
+        {
+            std::cout << row.xPos << " " << row.yPos << " " << row.zPos << "\n";
+        }
+        std::cout << "-------\n";
+    }
+
+    void transpose() {
+        Vec3 newRow0;
+        Vec3 newRow1;
+        Vec3 newRow2;
+
+        newRow0.xPos = data[0].xPos;
+        newRow0.yPos = data[1].xPos;
+        newRow0.zPos = data[2].xPos;
+        
+        newRow1.xPos = data[0].yPos;
+        newRow1.yPos = data[1].yPos;
+        newRow1.zPos = data[2].yPos;
+
+        newRow2.xPos = data[0].zPos;
+        newRow2.yPos = data[1].zPos;
+        newRow2.zPos = data[2].zPos;
+
+        data[0] = newRow0;
+        data[1] = newRow1;
+        data[2] = newRow2;
+    }
+
+    Vec3 getRow(int index) {return data[index];}
+
+private:
+    std::array<Vec3, 3> data;
+};
+
+class Vec4
+{
+public:
+    Vec4() = default;
+    Vec4(Vec3&& vec, float w) : vec(vec), wPos(w) {}
+    ~Vec4() {}
+
+    void printVec() { vec.printVec(); printf("\t%2f\n", wPos); }
+
+    Vec3 vec;
+    float wPos;
+};
+
+class Mat4
+{
+public:
+    Mat4() = default;
+    Mat4(const Vec4&& row0, const Vec4&& row1, const Vec4&& row2, const Vec4&& row3)
+    {
+        data[0] = row0;
+        data[1] = row1;
+        data[2] = row2;
+        data[3] = row3;
+    }
+    ~Mat4() {}
+
+    Vec4 getRow(size_t idx) { return data[idx]; }
+    void Transpose();
+    void printMat4();
+
+private:
+    std::array<Vec4, 4> data;
+
+};
+
+namespace Matrix
+{
+    Mat4 mat4Translate(Vec3&& translation);
+
+    void Vec3Translate(Vec3& vec, Mat4& translationMatrix);
+
 }
 
-void testGameItemSort()
+typedef struct TreeNode TreeNode;
+struct TreeNode
 {
-    GameItem* item1 = new GameItem(Gem::Jade, 15);
-    GameItem* item2 = new GameItem(Gem::Ruby, 2.5);
-    GameItem* item3 = new GameItem(Gem::Jade, 4.3);
-    GameItem* item4 = new GameItem(Gem::Sapphire, 1.1);
-    GameItem* item5 = new GameItem(Gem::Ruby, 2.0);
-    GameItem* item6 = new GameItem(Gem::Jade, 2.5);
-    GameItem* item7 = new GameItem(Gem::Jade, 7);
-    GameItem* item8 = new GameItem(Gem::Ruby, 5.4);
-    GameItem* item9 = new GameItem(Gem::Jade, 2.4);
-    GameItem* item0 = new GameItem(Gem::Sapphire, 10);
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int val) : val(val), left(nullptr), right(nullptr) {}
+    ~TreeNode() {}
 
-    std::vector<GameItem*> gameItems = {item0, item1, item3, item2, item5, item6, item7, item8, item4, item9};
-    
-    for(auto items : gameItems)
-    {
-        std::cout << items->getRarity() << std::endl;
-    }
-    std::cout << "---------\n";
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+};
 
-    sortByRarity(gameItems);
+struct BTree
+{
+    BTree() : m_top(nullptr), m_count(0) {}
+    BTree(TreeNode* top) : m_top(top), m_count(1) {}
+    ~BTree() {}
 
-    for(auto items : gameItems)
-    {
-        std::cout << items->getRarity() << std::endl;
-        delete items;
-    }
-}
+    void InsertNode(int value);
+    void InsertNode(TreeNode* node);
+    TreeNode* FindNode(int value);
+    void DeleteNode(int value);
+    void PrintNodes();
+
+    TreeNode* m_top;
+    size_t m_count;
+
+};
+
+class BST
+{
+public:
+    BST() : root(nullptr), count(0) {}
+    BST(int value) : root(new TreeNode(value)), count(1) {}
+    BST(TreeNode* node) : root(node), count(1) {}
+    ~BST(){}
+
+    void InsertNode(int value);
+    void Traversal_InOrder(TreeNode* node);
+    void Traversal_PreOrder(TreeNode* node);
+    void Traversal_PostOrder(TreeNode* node);
+
+    inline TreeNode* getRoot() { return root; }
+    inline size_t getCount() { return count; }
+
+
+private:
+    TreeNode* root;
+    size_t count;
+};
+
+struct Sphere
+{
+    Sphere() : cx(0), cy(0), cz(0), r(0) {}
+    Sphere(float x, float y, float z, float r) : cx(x), cy(y), cz(z), r(r) {}
+    ~Sphere() {}
+
+    float cx;
+    float cy;
+    float cz;
+    float r;
+};
 
 #endif

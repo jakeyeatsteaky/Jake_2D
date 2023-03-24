@@ -24,9 +24,13 @@ float DotProduct(Vec3& vec1, Vec3& vec2);
 
 float PointPlaneDistance(Plane& plane, Vec3& point);
 
+Vec3 getVecFromSphere(Sphere& s);
 
+Vec3 calculateDirectionVector(Vec3& pointA, Vec3& pointB);
 
+bool CollidingSpheres(Sphere& s1, Sphere& s2);
 
+bool checkBoundingBoxes(std::array<float, 4> aabb1, std::array<float,4> aabb2);
 
 
 #endif

@@ -165,5 +165,55 @@ float PointPlaneDistance(Plane& plane, Vec3& point)
     return DotProduct(directionToPoint,normal);
 }
 
+Vec3 getVecFromSphere(Sphere& s)
+{
+    Vec3 ret;
+    ret.xPos = s.cx;
+    ret.yPos = s.cy;
+    ret.zPos = s.cz;
+    return ret;
+}
+
+Vec3 calculateDirectionVector(Vec3& pointA, Vec3& pointB)
+{
+    Vec3 ret;
+
+    ret = pointB - pointA;
+    ret.Normalize();
+
+    return ret;
+}
+
+bool CollidingSpheres(Sphere& s1, Sphere& s2)
+{
+    float radSum = s1.r + s2.r;
+
+    Vec3 vec1 = getVecFromSphere(s1);
+    Vec3 vec2 = getVecFromSphere(s2);
+
+    Vec3 s1Tos2 = vec2 - vec1;
+    return magSquared(s1Tos2) < radSum*radSum;
+
+}
+
+bool checkBoundingBoxes(std::array<float, 4> aabb1, std::array<float,4> aabb2)
+{
+    // floats are ordered: xmin, xmax, ymin, ymax
+    float xMin = aabb1[0];
+    float xMax = aabb1[1];
+    float yMin = aabb1[2];
+    float yMax = aabb1[3];
+    float x2Min = aabb2[0];
+    float x2Max = aabb2[1];
+    float y2Min = aabb2[2];
+    float y2Max = aabb2[3];
+
+    if(x2Min > xMax || xMin > x2Max)
+        return false;
+    if(y2Min  > yMax || yMin > y2Max)
+        return false;
+    return true;
+}
+
 
 
