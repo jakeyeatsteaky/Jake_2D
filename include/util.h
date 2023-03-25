@@ -32,5 +32,8 @@ bool CollidingSpheres(Sphere& s1, Sphere& s2);
 
 bool checkBoundingBoxes(std::array<float, 4> aabb1, std::array<float,4> aabb2);
 
+int GenerateRandom(int start, int range);
+
+void SeedRandom();
 
 #endif

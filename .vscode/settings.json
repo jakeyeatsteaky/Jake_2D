@@ -2,6 +2,7 @@
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "files.associations": {
         "array": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "initializer_list": "cpp"
     }
 }

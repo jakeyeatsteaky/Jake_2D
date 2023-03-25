@@ -1,5 +1,7 @@
+#include <cstdlib>
+#include <cassert>
+
 #include "util.h"
-#include "assert.h"
 
 
 std::vector<Vec3*> vecGen(std::vector<float>& comp)
@@ -215,5 +217,13 @@ bool checkBoundingBoxes(std::array<float, 4> aabb1, std::array<float,4> aabb2)
     return true;
 }
 
+int GenerateRandom(int start, int range)
+{
+    return start + (rand() % range);
+}
 
+void SeedRandom()
+{
+   srand((unsigned)time(NULL)); 
+}
 

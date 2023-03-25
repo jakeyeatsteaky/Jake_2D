@@ -12,22 +12,22 @@
 #include "App.h"
 #include "DataStructures.h"
 #include "Observer.h"
-
+#include "util.h"
 
 int main(int argc, char** argv) {
+    
+    App app;
 
-   App app;
+    app.Setup();
 
-   app.Setup();
-
-   while(app.IsRunning())
-   {
+    while(app.IsRunning())
+    {
         app.Input();
         app.Update();
         app.Render();
-   }
+    }
 
-   app.Destroy();
+    app.Destroy();
 
 }
 
