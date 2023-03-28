@@ -31,5 +31,9 @@ int main(int argc, char** argv) {
 
 }
 
+// TODO:
+    // Quad TRee:
+        // Add SDLText to project so I can write draw time and update
+        // Compare brute force time with QuadTree T    
 
 

@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "SDL.h"
+
 #include "DataStructures.h"
 
 std::vector<Vec3*> vecGen(std::vector<float>& comp);
@@ -35,5 +37,7 @@ bool checkBoundingBoxes(std::array<float, 4> aabb1, std::array<float,4> aabb2);
 int GenerateRandom(int start, int range);
 
 void SeedRandom();
+
+bool rectIntersection(SDL_Rect& rect1, SDL_Rect& rect2);
 
 #endif
