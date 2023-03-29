@@ -3,15 +3,20 @@
 
 #include "Graphics.h"
 
+#include "SDL_opengl.h"
+
+#define OPEN_GL_RENDER
+
 SDL_Window* Graphics::window = nullptr;
 SDL_Renderer* Graphics::renderer = nullptr;
+SDL_GLContext Graphics::openGL_context = NULL;
 int Graphics::window_width = Graphics::WINDOW_WIDTH;
 int Graphics::window_height = Graphics::WINDOW_HEIGHT;
 
 
-bool Graphics::CreateWindow()
+bool Graphics::CreateSDLWindow()
 {
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    if(SDL_Init(SDL_INIT_EVERYTHING) != nullptr) {
         std::cerr << "Error initializing SDL\n";
         return false;
     }
@@ -19,19 +24,40 @@ bool Graphics::CreateWindow()
     SDL_DisplayMode display_mode;
     SDL_GetCurrentDisplayMode(0, &display_mode);
 
-    window = SDL_CreateWindow("Retro Interview Prep", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window_width, window_height, SDL_WINDOW_RESIZABLE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    window = SDL_CreateWindow("Retro Interview Prep", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window_width, window_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
     if(!window) {
         std::cerr << "Error creating SDL Window\n";
         return false;
     }
 
+#ifdef OPEN_GL_RENDER
+    openGL_context = SDL_GL_CreateContext(window);
+    if(openGL_context == NULL) { 
+        std::cerr << "Error creating OpenGL Context\n";
+        return false;
+    }
+
+#else
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if(!renderer) {
         std::cerr << "Error creating SDL Renderer\n";
         return false;
     }
-
+#endif
     return true;
+}
+
+void Graphics::RunGLSettings()
+{
+    gladLoadGLLoader(SDL_GL_GetProcAddress);
+    glViewport(0,0,window_width,window_height);
+
 }
 
 void Graphics::DestroyWindow()
@@ -43,8 +69,17 @@ void Graphics::DestroyWindow()
 
 void Graphics::ClearScreen(uint32_t color)
 {
+#ifdef OPEN_GL_RENDER
+
+    glClearColor(1.0f, 0.f, 0.f, 1.0f);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+#else
+
     SDL_SetRenderDrawColor(renderer, color >> 16, color >> 8, color, 255);
     SDL_RenderClear(renderer);
+
+#endif
 } 
 
 void Graphics::RenderFrame()
@@ -54,8 +89,12 @@ void Graphics::RenderFrame()
 
 void Graphics::DrawRect(const SDL_Rect& rect, uint32_t color)
 {
+#ifdef OPEN_GL_RENDER
+
+#else
     SDL_SetRenderDrawColor(renderer, color >> 24, color >> 16, color >> 8, color);
     SDL_RenderDrawRect(renderer, &rect);
+#endif
 }
 
 void Graphics::DrawPoints(std::vector<Vec2<int>*> points, uint32_t color)
