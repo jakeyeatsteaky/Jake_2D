@@ -16,7 +16,6 @@ void App::Setup()
 {
     SeedRandom();
     running = Graphics::CreateSDLWindow();
-    Graphics::RunGLSettings();
 
     // Initialize Game State
     SDL_Rect activeArea = {350,350, 300, 100};
@@ -97,11 +96,11 @@ void App::Render()
 
     Graphics::ClearScreen(0xFF000000);
 
-    //qt->render(0xFF0000FF, 0x00FF00FF); 
-    //gs->renderActive(0xFFFFFFFF);
+    qt->render(0xFF0000FF, 0x00FF00FF); 
+    gs->renderActive(0xFFFFFFFF);
     Graphics::DrawRect(getGameState()->activeArea, 0x00FF00FF);
 
-    //Graphics::RenderFrame();
+    Graphics::RenderFrame();
 
     
     SDL_GL_SwapWindow(Graphics::window);

@@ -5,7 +5,7 @@
 
 #include "SDL_opengl.h"
 
-#define OPEN_GL_RENDER
+//#define OPEN_GL_RENDER
 
 SDL_Window* Graphics::window = nullptr;
 SDL_Renderer* Graphics::renderer = nullptr;
@@ -16,7 +16,7 @@ int Graphics::window_height = Graphics::WINDOW_HEIGHT;
 
 bool Graphics::CreateSDLWindow()
 {
-    if(SDL_Init(SDL_INIT_EVERYTHING) != nullptr) {
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "Error initializing SDL\n";
         return false;
     }
@@ -24,11 +24,13 @@ bool Graphics::CreateSDLWindow()
     SDL_DisplayMode display_mode;
     SDL_GetCurrentDisplayMode(0, &display_mode);
 
+#ifdef OPEN_GL_RENDER
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+#endif
 
     window = SDL_CreateWindow("Retro Interview Prep", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window_width, window_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
     if(!window) {
