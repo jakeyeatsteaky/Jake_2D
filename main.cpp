@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <compare>
 #include <climits>
-#include "SDL.h"
 
 #include "App.h"
 #include "DataStructures.h"
@@ -25,15 +24,14 @@ int main(int argc, char** argv) {
         app.Input();
         app.Update();
         app.Render();
+        
     }
 
     app.Destroy();
 
+    return 0;
+
 }
 
-// TODO:
-    // Quad TRee:
-        // Add SDLText to project so I can write draw time and update
-        // Compare brute force time with QuadTree T    
 
 

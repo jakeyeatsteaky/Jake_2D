@@ -2,7 +2,8 @@
 #define GRAPHICS_H
 #include <vector>
 
-#include "SDL.h"
+#include <SDL.h>
+#include "glad/glad.h"
 #include "DataStructures.h"
 
 const int FPS = 60;
@@ -17,10 +18,12 @@ struct Graphics
     static int window_height;
     static SDL_Window* window;
     static SDL_Renderer* renderer;
+    static SDL_GLContext openGL_context;
 
     static int Width() {return window_width;}
     static int Height() {return window_height;}
-    static bool CreateWindow();
+    static bool CreateSDLWindow();
+    static void RunGLSettings();
     static void DestroyWindow();
     static void ClearScreen(uint32_t color); 
     static void RenderFrame();

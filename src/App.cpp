@@ -2,7 +2,7 @@
 
 #include "App.h"
 #include "QuadTree.h"
-#include "SDL.h"
+#include "SDL.h" 
 #include "DataStructures.h"
 #include "util.h"
 
@@ -15,7 +15,7 @@ bool App::IsRunning()
 void App::Setup()
 {
     SeedRandom();
-    running = Graphics::CreateWindow();
+    running = Graphics::CreateSDLWindow();
 
     // Initialize Game State
     SDL_Rect activeArea = {350,350, 300, 100};
@@ -93,6 +93,7 @@ void App::Render()
 {
     QuadTree* qt = getGameState()->getQuadTree();
     GameState* gs = getGameState();
+
     Graphics::ClearScreen(0xFF000000);
 
     qt->render(0xFF0000FF, 0x00FF00FF); 
@@ -100,6 +101,9 @@ void App::Render()
     Graphics::DrawRect(getGameState()->activeArea, 0x00FF00FF);
 
     Graphics::RenderFrame();
+
+    
+    SDL_GL_SwapWindow(Graphics::window);
 }
 
 void App::Destroy()
